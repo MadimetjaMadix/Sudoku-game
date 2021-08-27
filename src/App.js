@@ -1,6 +1,11 @@
 import './App.css'
+import { generateSodukoObject } from './lib/sodukoFns'
+import Game from './Components/Game'
 
 function App () {
+  function getSoduko (difficulty) {
+    return generateSodukoObject(difficulty)
+  }
   return (
     <div className='App'>
       <link
@@ -12,6 +17,7 @@ function App () {
       <header className='App-header'>
         Mad-Soduko
       </header>
+      <Game soduko={getSoduko('random')} />
     </div>
   )
 }
