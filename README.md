@@ -40,9 +40,11 @@ In other words, no number can be repeated in any 3×3 box, row, or column.
 - New Game: Lets you start a new game using the difficulty selected.
 - Timer: This displays the elapsed time since the game started. It only stops once the puzzle is solved. The counter increments by 10 every second you spend viewing the solution.
 - Highlights Mode: This Highlights the row, column, and 3×3 box the clicked square belongs to (See below).
+
 ![highLightsMode](https://user-images.githubusercontent.com/41375898/132259654-8f5165d9-9771-42e9-81b4-4b8745cda6b7.JPG)
 
 - Caution Mode: This lets you know if a number is repeating in its given row, column, and 3×3 box. The enterned number will be red if it is repeating (See below).
+
 ![CautionMode](https://user-images.githubusercontent.com/41375898/132259635-8cd2d7b2-3c4c-45e8-84e2-74a1330c4ac4.JPG)
 
 - Show Solution: This lets you see the solved solution (See below).
