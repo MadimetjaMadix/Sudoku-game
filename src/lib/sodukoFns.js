@@ -180,14 +180,13 @@ function solve (sudoku) {
 
 function levelNumber (difficulty) {
   const levels = ['hard', 'medium', 'easy']
-  const hard = Array.from(new Array(5), (x, i) => i + 58)
-  const medium = Array.from(new Array(5), (x, i) => i + 50)
-  const easy = Array.from(new Array(5), (x, i) => i + 41)
+  const hard = Array.from(new Array(8), (x, i) => i + 50)
+  const medium = Array.from(new Array(8), (x, i) => i + 40)
+  const easy = Array.from(new Array(8), (x, i) => i + 30)
 
   if (difficulty === 'random') {
     difficulty = levels[Math.floor(Math.random() * levels.length)]
   }
-
   if (difficulty === 'hard') {
     return hard[Math.floor(Math.random() * hard.length)]
   } else if (difficulty === 'medium') {
@@ -223,31 +222,39 @@ function getUnsolvedSoduko (difficulty, soduko) {
 }
 
 function getSoduko (difficulty) {
-  const soduko = Array(81).fill(null)
+  const soduko = [0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0]
   const solvedSoduko = solve(soduko)
   const unsolvedSoduko = getUnsolvedSoduko(difficulty, solvedSoduko)
   return { solvedSoduko, unsolvedSoduko }
 }
 
-function generateSodukoObject (difficulty) {
-  const { solvedSoduko, unsolvedSoduko } = getSoduko(difficulty)
-
+function generateSodukoObject (sodukoArray) {
   /*
       generate a sudoku with the following structure:
 
-      {rows: [{index: 0, cols: [{row: 0, col: 0, value: 1, readOnly: true}...]}, ...]}
+      {rows: [{index: 0, cols: [{row: 0, col: 0, value: 1, readOnly: true, active: false, repeating: false}...]}, ...]}
 
     */
   const sodukoRowsObject = []
   for (let i = 0; i < 9; i++) {
     const row = { cols: [], index: i }
     for (let j = 0; j < 9; j++) {
-      const value = unsolvedSoduko[i * 9 + j]
+      const value = sodukoArray[i * 9 + j]
       const col = {
         row: i,
         col: j,
         value: value,
-        readOnly: value !== null
+        readOnly: value !== null,
+        active: false,
+        repeating: false
       }
       row.cols.push(col)
     }
@@ -257,6 +264,13 @@ function generateSodukoObject (difficulty) {
 }
 
 function getSodukoFromObject (sodukoObj) {
-  return sodukoObj.map(row => row.cols.map(col => col.value)).flat()
+  return sodukoObj.map(row => row.cols.map(col => col.value === '' ? null : col.value)).flat()
 }
-export { solve, generateSodukoObject, getSodukoFromObject }
+export {
+  generateSodukoObject,
+  getSodukoFromObject,
+  returnBlock,
+  isPossibleNumber,
+  getSoduko,
+  isSolvedSudoku
+}
