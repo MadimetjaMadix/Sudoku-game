@@ -1,18 +1,20 @@
 import React, { Component } from 'react'
-import SodukoField from './SodukoField'
+import SudokuField from './SudokuField'
 
-export default class SodukoBoard extends Component {
+/* A SudokuBoard class component to display the board */
+export default class SudokuBoard extends Component {
   render () {
-    const { displayMode, soduko, onChange, onClick } = this.props
+    const { displayMode, sudoku, onChange, onClick } = this.props
+    /* map through the rows, the through the colums of each row and display each field */
     return (
 
-      (soduko !== null)
+      (sudoku !== null)
         ? (
           <section className='game-board'>
-            {soduko.map((row) =>
+            {sudoku.map((row) =>
               <div className={`board-row-${row.index}`} key={row.index}>
                 {row.cols.map((col) =>
-                  <SodukoField
+                  <SudokuField
                     field={col}
                     key={col.col}
                     className={`board-col-${col.col} ${col.active ? 'active' : ''}`}

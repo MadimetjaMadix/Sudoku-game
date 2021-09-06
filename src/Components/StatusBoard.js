@@ -4,8 +4,10 @@ import TimeStatus from './TimeStatus'
 import Button from 'react-bootstrap/Button'
 import BootstrapSwitchButton from 'bootstrap-switch-button-react'
 
+/* A StatusBoard class comonent to display the game status and additional buttons */
 export default class StatusBoard extends Component {
   render () {
+    /* retrive all the props */
     const {
       totalSeconds,
       cautionMode,
@@ -20,13 +22,20 @@ export default class StatusBoard extends Component {
     } = this.props
     return (
       <section className='game-status'>
+        {/* Display the difficulty selection menu */}
         <DifficultyMenu onChange={onChangeDifficulty} />
+
+        {/* Display a button for initialising a new game */}
         <Button
           variant='secondary'
           onClick={onNewGameClick}
         >New Game
         </Button>
+
+        {/* Display the time elapsed since the game started */}
         <TimeStatus totalSeconds={totalSeconds} isSolvedMode={isSolvedStatus} />
+
+        {/* Display the switch for changing the highlightsMode */}
         <BootstrapSwitchButton
           checked={highlightsMode}
           onstyle='secondary'
@@ -35,6 +44,8 @@ export default class StatusBoard extends Component {
           width={200}
           onChange={onHighlightsMode}
         />
+
+        {/* Display the switch for changing the cautionMode */}
         <BootstrapSwitchButton
           checked={cautionMode}
           onlabel='Caution On'
@@ -44,6 +55,7 @@ export default class StatusBoard extends Component {
           width={200}
         />
 
+        {/* Display the switch for changing the showSolutionMode */}
         <BootstrapSwitchButton
           checked={isSolvedStatus || showSolutionMode}
           onlabel='Hide Solution'

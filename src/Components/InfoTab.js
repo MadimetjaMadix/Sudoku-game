@@ -2,6 +2,7 @@ import React, { Component, useState } from 'react'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 
+/* A fuction to return the how to popup modal */
 function HowToModal () {
   const [show, setShow] = useState(false)
 
@@ -56,6 +57,7 @@ function HowToModal () {
   )
 }
 
+/* a InfoTab class component to display the help button */
 export default class InfoTab extends Component {
   render () {
     const { isSolvedStatus } = this.props

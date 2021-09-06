@@ -112,6 +112,16 @@ function determineRandomPossibleValue (possible, cell) {
 }
 
 // given a sudoku, returns a two dimension array with all possible values
+/*
+[
+    [ 9, 8, 7, ...],
+    .
+    .
+    .
+    [ 9, 8, 7, ...]
+]
+
+*/
 function scanSudokuForUnique (sudoku) {
   const possible = []
   for (let i = 0; i <= 80; i++) {
@@ -151,42 +161,60 @@ function nextRandom (possible) {
   return minChoices
 }
 
-// given a sudoku, solves it
+// given a sudoku, solve it and returns it
 function solve (sudoku) {
   const saved = []
   const savedSudoku = []
   let nextMove
   let whatToTry
   let attempt
+
   while (!isSolvedSudoku(sudoku)) {
+    // get the next possible moves per cell
     nextMove = scanSudokuForUnique(sudoku)
+
+    // if theres no new moves, check from the last stored moves
     if (nextMove === false) {
       nextMove = saved.pop()
       sudoku = savedSudoku.pop()
     }
+
+    // pick the cell with least number of moves to try
     whatToTry = nextRandom(nextMove)
 
+    // pick at random a number from the possible moves for the given cell
     attempt = determineRandomPossibleValue(nextMove, whatToTry)
+
+    // if there's move, remove it from the list off attempts
     if (nextMove[whatToTry].length > 1) {
       nextMove[whatToTry] = removeAttempt(nextMove[whatToTry], attempt)
       saved.push(nextMove.slice())
       savedSudoku.push(sudoku.slice())
     }
+    // add the number/attempt to the sudoku
     sudoku[whatToTry] = attempt
   }
 
   return sudoku
 }
 
+// given a difficulty, return the number of values to remove from a solved sudoku
 function levelNumber (difficulty) {
+  // define the different dificulty levels
   const levels = ['hard', 'medium', 'easy']
+  // hard => remove 50 - 58 values
   const hard = Array.from(new Array(8), (x, i) => i + 50)
+  // medium => remove 40 - 48 values
   const medium = Array.from(new Array(8), (x, i) => i + 40)
+  // easy => remove 30 - 38 values
   const easy = Array.from(new Array(8), (x, i) => i + 30)
 
+  // choose a level at random if difficulty is random
   if (difficulty === 'random') {
     difficulty = levels[Math.floor(Math.random() * levels.length)]
   }
+
+  // return a random number in the range for the given difficulty level
   if (difficulty === 'hard') {
     return hard[Math.floor(Math.random() * hard.length)]
   } else if (difficulty === 'medium') {
@@ -196,6 +224,7 @@ function levelNumber (difficulty) {
   }
 }
 
+// returns n (quantity) random numbers between 1 and 81, no repeats
 function randomIndexes (quantity) {
   const randomIndexesArr = []
   while (randomIndexesArr.length < quantity) {
@@ -205,24 +234,27 @@ function randomIndexes (quantity) {
   return randomIndexesArr
 }
 
-function removeNumbers (indexArray, solvedSoduko) {
-  const unsolvedSoduko = [...solvedSoduko]
+// repalece the given indexs with null from a solved sudoku, to create an unsolved sudoku, and returns it
+function removeNumbers (indexArray, solvedSudoku) {
+  const unsolvedSudoku = [...solvedSudoku]
   for (let i = 0; i < indexArray.length; i++) {
-    unsolvedSoduko[indexArray[i]] = null
+    unsolvedSudoku[indexArray[i]] = null
   }
-  return unsolvedSoduko
+  return unsolvedSudoku
 }
 
-function getUnsolvedSoduko (difficulty, soduko) {
-  const solvedSoduko = soduko
+/* returns an unsolved sudoku, given a solved sudoku and difficulty */
+function getUnsolvedSudoku (difficulty, sudoku) {
+  const solvedSudoku = sudoku
   const elemntsToRemove = levelNumber(difficulty)
-  const elementIndexes = randomIndexes(elemntsToRemove)
-  const unsolvedSoduko = removeNumbers(elementIndexes, solvedSoduko)
-  return unsolvedSoduko
+  const elementsIndexes = randomIndexes(elemntsToRemove)
+  const unsolvedSudoku = removeNumbers(elementsIndexes, solvedSudoku)
+  return unsolvedSudoku
 }
 
-function getSoduko (difficulty) {
-  const soduko = [0, 0, 0, 0, 0, 0, 0, 0, 0,
+/* returns a solved and unsolved Sudoku, given the difficulty */
+function getSudoku (difficulty) {
+  const sudoku = [0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -231,23 +263,24 @@ function getSoduko (difficulty) {
     0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0]
-  const solvedSoduko = solve(soduko)
-  const unsolvedSoduko = getUnsolvedSoduko(difficulty, solvedSoduko)
-  return { solvedSoduko, unsolvedSoduko }
+  const solvedSudoku = solve(sudoku)
+  const unsolvedSudoku = getUnsolvedSudoku(difficulty, solvedSudoku)
+  return { solvedSudoku, unsolvedSudoku }
 }
 
-function generateSodukoObject (sodukoArray) {
+/* returns a sudoku object from a given soduku array */
+function generateSudokuObject (SudokuArray) {
   /*
       generate a sudoku with the following structure:
 
       {rows: [{index: 0, cols: [{row: 0, col: 0, value: 1, readOnly: true, active: false, repeating: false}...]}, ...]}
 
     */
-  const sodukoRowsObject = []
+  const SudokuRowsObject = []
   for (let i = 0; i < 9; i++) {
     const row = { cols: [], index: i }
     for (let j = 0; j < 9; j++) {
-      const value = sodukoArray[i * 9 + j]
+      const value = SudokuArray[i * 9 + j]
       const col = {
         row: i,
         col: j,
@@ -258,19 +291,22 @@ function generateSodukoObject (sodukoArray) {
       }
       row.cols.push(col)
     }
-    sodukoRowsObject.push(row)
+    SudokuRowsObject.push(row)
   }
-  return sodukoRowsObject
+  return SudokuRowsObject
 }
 
-function getSodukoFromObject (sodukoObj) {
-  return sodukoObj.map(row => row.cols.map(col => col.value === '' ? null : col.value)).flat()
+/* returns a sudoku array from agiven sudoku object */
+function getSudokuFromObject (SudokuObj) {
+  return SudokuObj.map(row => row.cols.map(col => col.value === '' ? null : col.value)).flat()
 }
+
+/* Export the given functions */
 export {
-  generateSodukoObject,
-  getSodukoFromObject,
+  generateSudokuObject,
+  getSudokuFromObject,
   returnBlock,
   isPossibleNumber,
-  getSoduko,
+  getSudoku,
   isSolvedSudoku
 }
