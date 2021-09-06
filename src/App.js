@@ -12,7 +12,7 @@ function App () {
         crossOrigin='anonymous'
       />
       <header className='App-header'>
-        Mad-Soduko
+        Mad-Sudoku
       </header>
       <Game />
     </div>
