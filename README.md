@@ -1,4 +1,7 @@
 # Sudoku-game React App
+
+## Website
+[Soduko app on Heroku](https://lit-sea-00904.herokuapp.com/)
 ## Installtion
 
 To install the project in your local machine, click the `Code` button as shown bellow.
