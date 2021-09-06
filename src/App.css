@@ -1,21 +1,12 @@
+
+/* General styling*/
 .App {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
 .App-header {
   background-color: #282c34;
-  min-height: 20vh;
+  min-height: 15vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -25,24 +16,143 @@
   margin-bottom: 3rem;
 }
 
-.field{
-  width: 2rem;
-  height: 2rem;
-  font-size: 1.5rem;
+.container{
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}
+
+/*  info and status component styling*/
+.info-tab{
+  width: 700px;
+  height: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  align-content: space-between;
+  padding-left:4rem;
+  padding-right:100px;
+}
+
+.game-status{
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.btn-info{
+  width: 4rem !important;
+  font-style: italic;
+}
+
+.btn-secondary{
+ width: 150px !important;
+ height: 36px;
+ margin: 0 50px;
+ color: white !important;
+ font-weight: 500;
+}
+
+.status-difficulty-select, .status-time{
+  width: 150px !important;
+  height: 36px;
+  border-radius: 0.25rem;
   text-align: center;
-  color: #191b20;
+}
+
+.select-option{
+  text-align: center;
+}
+
+.status-time{
+  margin: 0 50px;
+  border: 1px solid black;
+  font-size: 1.3rem;
+}
+
+.time-solved-mode{
+  background: rgb(47,135,84);
+  color: white;
+}
+
+/* ============= Board styling ====================*/
+
+.game-board{
+  width: 450px;
+  height: 450px;
+}
+
+.field{
+  width: 3rem;
+  height: 3rem;
+  font-size: 1.5rem;
+  border-radius: 0.25rem;
+  text-align: center;
+  color: black;
   background: white;
+  border: 1px black solid;
 }
 
 .field[readonly]{
-  color: rgb(0, 0, 0);
+  color: rgb(58, 55, 55);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.block-1,.block-3,.block-5, .block-7 { 
+  background: rgb(233, 232, 232) !important;
+}
+
+.active{
+  background: rgba(176, 219, 248, 0.842) !important;
+}
+
+.repeating{
+  color: rgb(251, 0, 0) !important;
+}
+
+/* ============= Media query styling ====================*/
+
+@media screen and (max-width: 767px) {
+
+  .game-components{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
-  to {
-    transform: rotate(360deg);
+
+  .game-board{
+    width: 288px;
+    height: 288px;
   }
+
+  .field{
+    width: 2rem;
+    height: 2rem;
+    font-size: 1.5rem;
+  }
+
+  .game-status{
+    width: 90vw;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .btn-secondary, .status-time, .switch{
+    min-width: 100px;
+    margin: 10px 0;
+    width: 35vw !important;
+  } 
+
+  .info-tab{
+    width: 90vw;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    align-content: space-between !important;
+  }
+
 }
