@@ -12,11 +12,13 @@ export default class TimeStatus extends Component {
   }
 
   render () {
-    const { totalSeconds, isSolvedMode } = this.props
+    const { startTime, solvedTime, isSolvedMode } = this.props
+    const timeNew = isSolvedMode ? solvedTime : new Date()
+    const secondsElapsed = parseInt((timeNew - startTime) / 1000)
     /* claculate the corresponding seconds from the totalSeconds */
-    const seconds = this.timeFormat((totalSeconds % 60).toString())
+    const seconds = this.timeFormat((secondsElapsed % 60).toString())
     /* claculate the corresponding minutes from the totalSeconds */
-    const mins = this.timeFormat(Math.floor(totalSeconds / 60).toString())
+    const mins = this.timeFormat(Math.floor(secondsElapsed / 60).toString())
 
     return (
       /* Add classes based on the isSolvedMode */

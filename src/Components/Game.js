@@ -22,11 +22,13 @@ export default class Game extends Component {
       solutionSoduko: null,
       highlightsMode: true,
       cautionMode: false,
-      totalSeconds: 0,
+      penaltySeconds: 0,
       difficulty: 'random',
       displayMode: false,
       showSolution: false,
-      isSolved: false
+      isSolved: false,
+      startTime: new Date(),
+      solvedTime: null
 
     }))
 
@@ -49,10 +51,12 @@ export default class Game extends Component {
     this.setState(produce(state => {
       state.sudoku = generateSudokuObject(unsolvedSudoku)
       state.solutionSoduko = generateSudokuObject(solvedSudoku)
-      state.totalSeconds = 0
+      state.penaltySeconds = 0
       state.displayMode = false
       state.showSolution = false
       state.isSolved = false
+      state.startTime = new Date()
+      state.solvedTime = null
     }))
     setInterval(this.countUp, 1000)
   }
@@ -62,30 +66,32 @@ export default class Game extends Component {
     // this.ititializeBoard()
   }
 
-  /* A function to increment/update the totalSeconds state varriable */
+  /* A function to increment/update the penaltySeconds state varriable */
   countUp () {
     if (this.state.isSolved) {
       // return if the pazzle is solved
-      this.isSolved()
+      // this.isSolved()
       return
     } else if (this.state.showSolution) {
       // increment by 10 if the solution is viewed
       this.setState(produce(state => {
-        state.totalSeconds = state.totalSeconds + 10
+        state.penaltySeconds = state.penaltySeconds + 1
       }))
     }
     // else increment by 1
-    this.setState(produce(state => {
-      state.totalSeconds = state.totalSeconds + 1
-    }))
+    /* this.setState(produce(state => {
+      state.penaltySeconds = state.penaltySeconds + 1
+    })) */
     this.isSolved()
   }
 
   /* A function to check if the sudoku is soved and update the isSolved stated variable accordingly */
   isSolved () {
     const sodukoArray = getSudokuFromObject(this.state.sudoku)
+    const isSolved = isSolvedSudoku(sodukoArray)
     this.setState(produce(state => {
-      state.isSolved = isSolvedSudoku(sodukoArray)
+      state.isSolved = isSolved
+      state.solvedTime = isSolved ? new Date() : null
     }))
   }
 
@@ -180,6 +186,14 @@ export default class Game extends Component {
   render () {
     // get the sudoku to display based on the mode
     const sudoku = (this.state.showSolution) ? this.state.solutionSoduko : this.state.sudoku
+    const { startTime, soduku, solvedTime, penaltySeconds } = this.state
+    /*const data = {
+      startTime: startTime,
+      soduku: soduku,
+      solvedTime: solvedTime,
+      penaltySeconds: penaltySeconds
+    }
+    this.state.isSolved && console.log(data)*/
     return (
 
       <>
@@ -199,7 +213,8 @@ export default class Game extends Component {
             }
 
           <StatusBoard
-            totalSeconds={this.state.totalSeconds}
+            startTime={this.state.startTime}
+            solvedTime={this.state.solvedTime}
             cautionMode={this.state.cautionMode}
             onCautionMode={this.handleCautionMode}
             highlightsMode={this.state.highlightsMode}
