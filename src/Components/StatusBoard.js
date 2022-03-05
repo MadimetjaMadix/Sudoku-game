@@ -9,7 +9,8 @@ export default class StatusBoard extends Component {
   render () {
     /* retrive all the props */
     const {
-      totalSeconds,
+      startTime,
+      solvedTime,
       cautionMode,
       onCautionMode,
       highlightsMode,
@@ -35,7 +36,7 @@ export default class StatusBoard extends Component {
         </Button>
 
         {/* Display the time elapsed since the game started */}
-        {dispayBoard && <TimeStatus totalSeconds={totalSeconds} isSolvedMode={isSolvedStatus} />}
+        {dispayBoard && <TimeStatus startTime={startTime} solvedTime={solvedTime} isSolvedMode={isSolvedStatus} />}
 
         {/* Display the switch for changing the highlightsMode */}
         {dispayBoard &&
