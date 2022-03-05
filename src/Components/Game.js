@@ -54,12 +54,12 @@ export default class Game extends Component {
       state.showSolution = false
       state.isSolved = false
     }))
+    setInterval(this.countUp, 1000)
   }
 
   /* A function to run once the component is mounted */
   componentDidMount () {
-    this.ititializeBoard()
-    setInterval(this.countUp, 1000)
+    // this.ititializeBoard()
   }
 
   /* A function to increment/update the totalSeconds state varriable */
@@ -189,12 +189,14 @@ export default class Game extends Component {
         <br />
         <Container className='game-components'>
 
-          <SudokuBoard
-            displayMode={this.state.displayMode}
-            sudoku={sudoku}
-            onChange={this.handleChange}
-            onClick={this.handleInputClick}
-          />
+          {
+            sudoku && <SudokuBoard
+              displayMode={this.state.displayMode}
+              sudoku={sudoku}
+              onChange={this.handleChange}
+              onClick={this.handleInputClick}
+                      />
+            }
 
           <StatusBoard
             totalSeconds={this.state.totalSeconds}
@@ -207,6 +209,7 @@ export default class Game extends Component {
             onNewGameClick={this.handleNewGameClick}
             onChangeDifficulty={this.handleChangeDifficulty}
             isSolvedStatus={this.state.isSolved}
+            dispayBoard={sudoku !== null}
           />
         </Container>
       </>

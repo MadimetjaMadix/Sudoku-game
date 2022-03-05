@@ -18,8 +18,10 @@ export default class StatusBoard extends Component {
       onShowSolutionChange,
       onNewGameClick,
       onChangeDifficulty,
-      isSolvedStatus
+      isSolvedStatus,
+      dispayBoard
     } = this.props
+
     return (
       <section className='game-status'>
         {/* Display the difficulty selection menu */}
@@ -33,38 +35,41 @@ export default class StatusBoard extends Component {
         </Button>
 
         {/* Display the time elapsed since the game started */}
-        <TimeStatus totalSeconds={totalSeconds} isSolvedMode={isSolvedStatus} />
+        {dispayBoard && <TimeStatus totalSeconds={totalSeconds} isSolvedMode={isSolvedStatus} />}
 
         {/* Display the switch for changing the highlightsMode */}
-        <BootstrapSwitchButton
-          checked={highlightsMode}
-          onstyle='secondary'
-          onlabel='Highlights On'
-          offlabel='Highlights Off'
-          width={200}
-          onChange={onHighlightsMode}
-        />
+        {dispayBoard &&
+          <BootstrapSwitchButton
+            checked={highlightsMode}
+            onstyle='secondary'
+            onlabel='Highlights On'
+            offlabel='Highlights Off'
+            width={200}
+            onChange={onHighlightsMode}
+          />}
 
         {/* Display the switch for changing the cautionMode */}
-        <BootstrapSwitchButton
-          checked={cautionMode}
-          onlabel='Caution On'
-          offlabel='Caution Off'
-          onChange={onCautionMode}
-          onstyle='secondary'
-          width={200}
-        />
+        {dispayBoard &&
+          <BootstrapSwitchButton
+            checked={cautionMode}
+            onlabel='Caution On'
+            offlabel='Caution Off'
+            onChange={onCautionMode}
+            onstyle='secondary'
+            width={200}
+          />}
 
         {/* Display the switch for changing the showSolutionMode */}
-        <BootstrapSwitchButton
-          checked={isSolvedStatus || showSolutionMode}
-          onlabel='Hide Solution'
-          offlabel='Show Solution'
-          onstyle='secondary'
-          onChange={onShowSolutionChange}
-          disabled={isSolvedStatus}
-          width={200}
-        />
+        {dispayBoard &&
+          <BootstrapSwitchButton
+            checked={isSolvedStatus || showSolutionMode}
+            onlabel='Hide Solution'
+            offlabel='Show Solution'
+            onstyle='secondary'
+            onChange={onShowSolutionChange}
+            disabled={isSolvedStatus}
+            width={200}
+          />}
 
       </section>
     )
