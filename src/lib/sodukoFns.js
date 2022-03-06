@@ -162,7 +162,8 @@ function nextRandom (possible) {
 }
 
 // given a sudoku, solve it and returns it
-function solve (sudoku) {
+function solve (sudokuUnsolved) {
+  let sudoku = [...sudokuUnsolved]
   const saved = []
   const savedSudoku = []
   let nextMove
@@ -301,6 +302,22 @@ function getSudokuFromObject (SudokuObj) {
   return SudokuObj.map(row => row.cols.map(col => col.value === '' ? null : col.value)).flat()
 }
 
+/** A function to create a Share URL */
+function shareURL (SudokuObj) {
+  const query = btoa(JSON.stringify(SudokuObj))
+  return document.location.href.replace(/\?.+$/, '') + `?sudoku=${query}`
+}
+
+/** A function to extract the data from the URL */
+function extractURLData () {
+  const urlSearchParams = new URLSearchParams(window.location.search)
+  const sudoku = Object.fromEntries(urlSearchParams.entries()).sudoku
+  if (sudoku) {
+    return JSON.parse(atob(sudoku))
+  }
+  return null
+}
+
 /* Export the given functions */
 export {
   generateSudokuObject,
@@ -308,5 +325,8 @@ export {
   returnBlock,
   isPossibleNumber,
   getSudoku,
-  isSolvedSudoku
+  isSolvedSudoku,
+  solve,
+  shareURL,
+  extractURLData
 }
