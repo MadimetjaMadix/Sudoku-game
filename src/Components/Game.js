@@ -5,7 +5,10 @@ import {
   getSudokuFromObject,
   getSudoku,
   generateSudokuObject,
-  isSolvedSudoku
+  isSolvedSudoku,
+  solve,
+  shareURL,
+  extractURLData
 } from '../lib/sodukoFns'
 import InfoTab from './InfoTab'
 import SudokuBoard from './SudokuBoard'
@@ -28,7 +31,8 @@ export default class Game extends Component {
       showSolution: false,
       isSolved: false,
       startTime: new Date(),
-      solvedTime: null
+      solvedTime: null,
+      shareURL: null
 
     }))
 
@@ -42,13 +46,24 @@ export default class Game extends Component {
     this.handleCautionMode = this.handleCautionMode.bind(this)
     this.handleShowSolution = this.handleShowSolution.bind(this)
     this.handleClearSelection = this.handleClearSelection.bind(this)
+    this.handleShareGame = this.handleShareGame.bind(this)
     this.isSolved = this.isSolved.bind(this)
   }
 
   /* A function to initialise the game */
   ititializeBoard () {
-    const { solvedSudoku, unsolvedSudoku } = getSudoku(this.state.difficulty)
+    const URLData = extractURLData()
+    let sudokuData
+    if (URLData) {
+      sudokuData = {
+        solvedSudoku: solve(URLData.rawSoduko),
+        unsolvedSudoku: URLData.rawSoduko
+      }
+    }
+    const { solvedSudoku, unsolvedSudoku } = URLData ? sudokuData : getSudoku(this.state.difficulty)
+
     this.setState(produce(state => {
+      state.sudokuRaw = unsolvedSudoku
       state.sudoku = generateSudokuObject(unsolvedSudoku)
       state.solutionSoduko = generateSudokuObject(solvedSudoku)
       state.penaltySeconds = 0
@@ -57,6 +72,7 @@ export default class Game extends Component {
       state.isSolved = false
       state.startTime = new Date()
       state.solvedTime = null
+      state.URLData = URLData
     }))
     setInterval(this.countUp, 1000)
   }
@@ -93,6 +109,18 @@ export default class Game extends Component {
       state.isSolved = isSolved
       state.solvedTime = isSolved ? new Date() : null
     }))
+
+    if (isSolved) {
+      const sudokuObj = {
+        raw: this.state.sudokuRaw,
+        startTime: this.state.startTime,
+        solvedTime: this.state.solvedTime,
+        penaltySeconds: this.state.penaltySeconds
+      }
+      this.setState(produce(state => {
+        state.shareURL = shareURL(sudokuObj)
+      }))
+    }
   }
 
   /* A function to intialise the game if the New Game button is clicked */
@@ -113,6 +141,7 @@ export default class Game extends Component {
       state.showSolution = !state.showSolution
       state.displayMode = state.showSolution
     }))
+    this.countUp()
   }
 
   /* A function to update the highlightsMode state variable on change */
@@ -183,24 +212,40 @@ export default class Game extends Component {
     }))
   }
 
+  /** A Function to create data to share the game */
+  handleShareGame () {
+    let name = null
+    while (name === null) {
+      name = prompt('Please enter your name to share the Game')
+    }
+    /* content to share */
+    const sudokuObj = {
+      name: name,
+      raw: this.state.sudokuRaw,
+      startTime: this.state.startTime,
+      solvedTime: this.state.solvedTime,
+      penaltySeconds: this.state.penaltySeconds
+    }
+    /* set the state variables */
+    this.setState(produce(state => {
+      state.shareURL = shareURL(sudokuObj)
+      state.shareData = sudokuObj
+    }))
+  }
+
   render () {
     // get the sudoku to display based on the mode
     const sudoku = (this.state.showSolution) ? this.state.solutionSoduko : this.state.sudoku
-    const { startTime, soduku, solvedTime, penaltySeconds } = this.state
-    /*const data = {
-      startTime: startTime,
-      soduku: soduku,
-      solvedTime: solvedTime,
-      penaltySeconds: penaltySeconds
-    }
-    this.state.isSolved && console.log(data)*/
     return (
 
       <>
         <Container>
-          <InfoTab isSolvedStatus={this.state.isSolved} />
+          <InfoTab isSolvedStatus={this.state.isSolved} onShareClick={this.handleShareGame} />
         </Container>
         <br />
+        <Container>
+          {this.state.shareData && <p>share data ready</p>}
+        </Container>
         <Container className='game-components'>
 
           {

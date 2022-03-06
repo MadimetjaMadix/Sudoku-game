@@ -56,14 +56,21 @@ function HowToModal () {
     </>
   )
 }
-
+/*
+const Share = ({ shareURL }) => {
+  return (
+    <a className='btn' href={shareURL} target='_'>Share</a>
+  )
+}
+*/
 /* a InfoTab class component to display the help button */
 export default class InfoTab extends Component {
   render () {
-    const { isSolvedStatus } = this.props
+    const { isSolvedStatus, onShareClick } = this.props
     return (
       <div className='info-tab'>
         <h4>{isSolvedStatus === true ? 'Puzzle Solved' : 'Welcome'} </h4>
+        {isSolvedStatus && <button className='btn' onClick={onShareClick}>Share Game </button>}
         <HowToModal />
       </div>
     )

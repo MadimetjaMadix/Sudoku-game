@@ -90,13 +90,13 @@
   font-size: 1.5rem;
   border-radius: 0.25rem;
   text-align: center;
-  color: black;
+  color: rgb(0, 101, 253);
   background: white;
   border: 1px black solid;
 }
 
 .field[readonly]{
-  color: rgb(58, 55, 55);
+  color: rgb(0, 0, 0);
 }
 
 .block-1,.block-3,.block-5, .block-7 { 
