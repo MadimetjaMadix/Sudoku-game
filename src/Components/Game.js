@@ -20,13 +20,13 @@ import ChallengeComplete from './ChallengeComplete'
 
 /* A Game class componet to rander the game */
 export default class Game extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = produce({}, () => ({
       sudoku: null,
       solutionSoduko: null,
-      highlightsMode: true,
-      cautionMode: false,
+      highlightsMode: JSON.parse(window.localStorage.getItem('highlightsMode')) || true,
+      cautionMode: JSON.parse(window.localStorage.getItem('cautionMode')) || false,
       penaltySeconds: 0,
       difficulty: 'random',
       displayMode: false,
@@ -54,33 +54,45 @@ export default class Game extends Component {
   }
 
   /** A Function to load parameter from the url */
-  handleURLData () {
+  handleURLData() {
     const URLData = extractURLData()
-
     this.setState(produce(state => {
-      state.URLData = URLData
+      state.URLData = URLData || JSON.parse(window.localStorage.getItem('URLData'))
     }))
+    if (URLData) {
+      window.localStorage.setItem('URLData', JSON.stringify(URLData))
+    }
   }
 
   /** A Function to clear/ delete the url data if available */
-  handleClearURLData () {
+  handleClearURLData() {
+    window.localStorage.removeItem('URLData')
     this.setState(produce(state => {
       state.URLData = null
     }))
   }
 
   /* A function to initialise the game */
-  ititializeBoard () {
-    const URLData = this.state.URLData
-    let sudokuData
-    if (URLData) {
-      sudokuData = {
-        solvedSudoku: solve(URLData.raw),
-        unsolvedSudoku: URLData.raw
-      }
+  ititializeBoard() {
+    // check if the challenge is completed, clear the data
+    let isSolved = false
+    if (this.state.sudoku) {
+      const sodukoArray = getSudokuFromObject(this.state.sudoku)
+      isSolved = isSolvedSudoku(sodukoArray)
     }
-    const { solvedSudoku, unsolvedSudoku } = URLData ? sudokuData : getSudoku(this.state.difficulty)
+    let URLData = null
+    let sudokuData
+    if (this.state.URLData && !isSolved) {
+      URLData = this.state.URLData
+      if (URLData) {
+        sudokuData = {
+          solvedSudoku: solve(URLData.raw),
+          unsolvedSudoku: URLData.raw
+        }
+      }
+    } else this.handleClearURLData()
 
+    const { solvedSudoku, unsolvedSudoku } = URLData ? sudokuData : getSudoku(this.state.difficulty)
     this.setState(produce(state => {
       state.sudokuRaw = unsolvedSudoku
       state.sudoku = generateSudokuObject(unsolvedSudoku)
@@ -92,37 +104,42 @@ export default class Game extends Component {
       state.startTime = new Date()
       state.solvedTime = null
       state.URLData = URLData
-      state.difficulty = URLData ? URLData.difficulty : state.difficulty
+      state.difficulty = URLData ? URLData.difficulty : this.state.difficulty
     }))
+
+    window.localStorage.setItem('URLData', JSON.stringify(this.state.URLData))
     setInterval(this.countUp, 1000)
   }
 
   /* A function to run once the component is mounted */
-  componentDidMount () {
+  componentDidMount() {
+    const unloadCallback = (event) => {
+      event.preventDefault()
+      event.returnValue = ''
+      return ''
+    }
+    // notify user before reload
+    window.addEventListener('beforeunload', unloadCallback)
     this.handleURLData()
   }
 
   /* A function to increment/update the penaltySeconds state varriable */
-  countUp () {
+  countUp() {
     if (this.state.isSolved) {
-      // return if the pazzle is solved
-      // this.isSolved()
       return
     } else if (this.state.showSolution) {
       // increment by 10 if the solution is viewed
+      const penalty = this.state.penaltySeconds + 1
+      window.localStorage.setItem('penaltySeconds', JSON.stringify(penalty))
       this.setState(produce(state => {
-        state.penaltySeconds = state.penaltySeconds + 1
+        state.penaltySeconds = penalty
       }))
     }
-    // else increment by 1
-    /* this.setState(produce(state => {
-      state.penaltySeconds = state.penaltySeconds + 1
-    })) */
     this.isSolved()
   }
 
   /* A function to check if the sudoku is soved and update the isSolved stated variable accordingly */
-  isSolved () {
+  isSolved() {
     const sodukoArray = getSudokuFromObject(this.state.sudoku)
     const isSolved = isSolvedSudoku(sodukoArray)
     const solvedAt = new Date()
@@ -130,7 +147,7 @@ export default class Game extends Component {
     if (isSolved) {
       let name = null
       while (name === null) {
-        name = prompt('Please enter your name to display Game results')
+        name = window.prompt('Please enter your name to display Game results')
       }
       /* content to share */
       const sudokuObj = {
@@ -141,32 +158,38 @@ export default class Game extends Component {
         penaltySeconds: this.state.penaltySeconds,
         difficulty: this.state.difficulty
       }
+
       this.setState(produce(state => {
         state.shareData = sudokuObj
         state.shareURL = shareURL(sudokuObj)
         state.isSolved = isSolved
       }))
+      window.localStorage.setItem('shareData', JSON.stringify(sudokuObj))
+      window.localStorage.setItem('shareURL', JSON.stringify(this.state.shareURL))
+      window.localStorage.setItem('isSolved', JSON.stringify(isSolved))
     }
-
+    const isSolveTime = isSolved ? solvedAt : null
+    window.localStorage.setItem('solvedTime', JSON.stringify(isSolveTime))
     this.setState(produce(state => {
-      state.solvedTime = isSolved ? solvedAt : null
+      state.solvedTime = isSolveTime
     }))
   }
 
   /* A function to intialise the game if the New Game button is clicked */
-  handleNewGameClick () {
+  handleNewGameClick() {
     this.ititializeBoard()
   }
 
   /* A function to update the difficulty state variable on change */
-  handleChangeDifficulty (difficulty) {
+  handleChangeDifficulty(difficulty) {
+    window.localStorage.setItem('difficulty', JSON.stringify(difficulty))
     this.setState(produce(state => {
       state.difficulty = difficulty
     }))
   }
 
   /* A function to update the showSolution and displayMode state variables on change */
-  handleShowSolution () {
+  handleShowSolution() {
     this.setState(produce(state => {
       state.showSolution = !state.showSolution
       state.displayMode = state.showSolution
@@ -175,7 +198,8 @@ export default class Game extends Component {
   }
 
   /* A function to update the highlightsMode state variable on change */
-  handleHighlightsMode () {
+  handleHighlightsMode() {
+    window.localStorage.setItem('highlightsMode', JSON.stringify(!this.state.highlightsMode))
     this.setState(produce(state => {
       state.highlightsMode = !state.highlightsMode
     }))
@@ -183,7 +207,8 @@ export default class Game extends Component {
   }
 
   /* A function to update the cautionMode state variable on change */
-  handleCautionMode () {
+  handleCautionMode() {
+    window.localStorage.setItem('cautionMode', JSON.stringify(!this.state.cautionMode))
     this.setState(produce(state => {
       state.cautionMode = !state.cautionMode
     }))
@@ -191,7 +216,7 @@ export default class Game extends Component {
   }
 
   /* A function to update the active and repeating properties of the sudoku object */
-  handleClearSelection () {
+  handleClearSelection() {
     for (let i = 0; i < 9; i++) {
       for (let j = 0; j < 9; j++) {
         this.setState(produce(state => {
@@ -203,7 +228,7 @@ export default class Game extends Component {
   }
 
   /* A function to highlight the 3x3 block, row and column of the clicked cell if highlightsMode is active */
-  handleInputClick (e) {
+  handleInputClick(e) {
     if (this.state.highlightsMode) {
       this.handleClearSelection()
       for (let col = 0; col < 9; col++) {
@@ -231,7 +256,7 @@ export default class Game extends Component {
   }
 
   /* A function to update the value of the given cell of the sudoku object */
-  handleChange (e) {
+  handleChange(e) {
     /** create the next immutable state by mutating the current one */
     const sodukoArray = getSudokuFromObject(this.state.sudoku)
     const cell = e.row * 9 + e.col
@@ -242,7 +267,7 @@ export default class Game extends Component {
     }))
   }
 
-  render () {
+  render() {
     // get the sudoku to display based on the mode
     const sudoku = (this.state.showSolution) ? this.state.solutionSoduko : this.state.sudoku
     return (
@@ -259,13 +284,13 @@ export default class Game extends Component {
 
           {
             (sudoku && !this.state.isSolved) &&
-              <SudokuBoard
-                displayMode={this.state.displayMode}
-                sudoku={sudoku}
-                onChange={this.handleChange}
-                onClick={this.handleInputClick}
-              />
-            }
+            <SudokuBoard
+              displayMode={this.state.displayMode}
+              sudoku={sudoku}
+              onChange={this.handleChange}
+              onClick={this.handleInputClick}
+            />
+          }
 
           <StatusBoard
             startTime={this.state.startTime}

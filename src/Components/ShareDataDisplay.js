@@ -28,7 +28,6 @@ export default function ShareDataDisplay ({ shareData, shareURL, onClick }) {
 
   let { name, startTime, solvedTime, penaltySeconds, difficulty } = shareData
   if (!shareURL) {
-    console.log(shareData)
     startTime = new Date(startTime)
     solvedTime = new Date(solvedTime)
   }
@@ -42,8 +41,8 @@ export default function ShareDataDisplay ({ shareData, shareURL, onClick }) {
         <p>Difficulty: {difficulty}</p>
         <p>Solve Time: {timeFormat(startTime, solvedTime)}</p>
         <p>Penalty Time: {minutesTimeFormat(penaltySeconds)}</p>
-        {shareURL && (<p>URL: <a href={shareURL} target='_' id='share-Display-url'>{shareURL}</a> <button onClick={onclick}>Copy</button></p>)}
-        {!shareURL && (<p>Click <span>New Game</span> to play this game <button onClick={onClick}>Delete Reaquest</button></p>)}
+        {shareURL && (<p>Share URL: <a href={shareURL} target='_' id='share-Display-url'>{shareURL}</a> <button onClick={onclick}>Copy</button></p>)}
+        {!shareURL && (<p>Click <span className='btn'>New Game</span> to play this game, or <button onClick={onClick}>Delete Reaquest</button></p>)}
       </div>
     </Container>
   )
