@@ -1,5 +1,6 @@
 import './App.css'
 import Game from './Components/Game'
+import Logo from './SD_logo.svg'
 
 /* rander the Game component */
 function App () {
@@ -12,7 +13,7 @@ function App () {
         crossOrigin='anonymous'
       />
       <header className='App-header'>
-        Mad-Sudoku
+        Mad-<img src={Logo} alt='S' />udoku
       </header>
       <Game />
     </div>
