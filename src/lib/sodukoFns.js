@@ -310,8 +310,16 @@ function shareURL (SudokuObj) {
 
 /** A function to extract the data from the URL */
 function extractURLData () {
-  const urlSearchParams = new URLSearchParams(window.location.search)
-  const sudoku = Object.fromEntries(urlSearchParams.entries()).sudoku
+  // retrive the URL
+  const url = new URL(window.location)
+  // get the sudoku parameter
+  const sudoku = url.searchParams.get('sudoku')
+  // clear all parameters
+  url.searchParams.delete('sudoku')
+  url.searchParams.delete('foo')
+  window.history.pushState({}, '', url)
+
+  // decode the sudoku parameter if given
   if (sudoku) {
     return JSON.parse(atob(sudoku))
   }

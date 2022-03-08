@@ -9,7 +9,7 @@ function HowToModal () {
   return (
     <>
       <Button variant='info' onClick={() => setShow(true)}>
-        help
+        how to
       </Button>
 
       <Modal
@@ -66,11 +66,10 @@ const Share = ({ shareURL }) => {
 /* a InfoTab class component to display the help button */
 export default class InfoTab extends Component {
   render () {
-    const { isSolvedStatus, onShareClick } = this.props
+    const { isSolvedStatus } = this.props
     return (
       <div className='info-tab'>
         <h4>{isSolvedStatus === true ? 'Puzzle Solved' : 'Welcome'} </h4>
-        {isSolvedStatus && <button className='btn' onClick={onShareClick}>Share Game </button>}
         <HowToModal />
       </div>
     )
