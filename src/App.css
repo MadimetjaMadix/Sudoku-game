@@ -6,14 +6,19 @@
 
 .App-header {
   background-color: #282c34;
-  min-height: 15vh;
+  min-height: 10vh;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   font-size: calc(20px + 2vmin);
   color: white;
   margin-bottom: 3rem;
+}
+
+.App-header img {
+  height: 3rem !important;
+  max-width: 70px;
 }
 
 .container{
