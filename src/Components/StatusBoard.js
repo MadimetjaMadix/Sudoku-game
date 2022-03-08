@@ -39,7 +39,7 @@ export default class StatusBoard extends Component {
         {dispayBoard && <TimeStatus startTime={startTime} solvedTime={solvedTime} isSolvedMode={isSolvedStatus} />}
 
         {/* Display the switch for changing the highlightsMode */}
-        {dispayBoard &&
+        {dispayBoard && !isSolvedStatus &&
           <BootstrapSwitchButton
             checked={highlightsMode}
             onstyle='secondary'
@@ -50,7 +50,7 @@ export default class StatusBoard extends Component {
           />}
 
         {/* Display the switch for changing the cautionMode */}
-        {dispayBoard &&
+        {dispayBoard && !isSolvedStatus &&
           <BootstrapSwitchButton
             checked={cautionMode}
             onlabel='Caution On'
@@ -61,7 +61,7 @@ export default class StatusBoard extends Component {
           />}
 
         {/* Display the switch for changing the showSolutionMode */}
-        {dispayBoard &&
+        {dispayBoard && !isSolvedStatus &&
           <BootstrapSwitchButton
             checked={isSolvedStatus || showSolutionMode}
             onlabel='Hide Solution'

@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import Container from 'react-bootstrap/Container'
+import produce from 'immer'
 import {
   returnBlock,
   isPossibleNumber,
@@ -13,8 +15,8 @@ import {
 import InfoTab from './InfoTab'
 import SudokuBoard from './SudokuBoard'
 import StatusBoard from './StatusBoard'
-import Container from 'react-bootstrap/Container'
-import produce from 'immer'
+import ShareDataDisplay from './ShareDataDisplay'
+import ChallengeComplete from './ChallengeComplete'
 
 /* A Game class componet to rander the game */
 export default class Game extends Component {
@@ -46,18 +48,35 @@ export default class Game extends Component {
     this.handleCautionMode = this.handleCautionMode.bind(this)
     this.handleShowSolution = this.handleShowSolution.bind(this)
     this.handleClearSelection = this.handleClearSelection.bind(this)
-    this.handleShareGame = this.handleShareGame.bind(this)
+    this.handleURLData = this.handleURLData.bind(this)
+    this.handleClearURLData = this.handleClearURLData.bind(this)
     this.isSolved = this.isSolved.bind(this)
+  }
+
+  /** A Function to load parameter from the url */
+  handleURLData () {
+    const URLData = extractURLData()
+
+    this.setState(produce(state => {
+      state.URLData = URLData
+    }))
+  }
+
+  /** A Function to clear/ delete the url data if available */
+  handleClearURLData () {
+    this.setState(produce(state => {
+      state.URLData = null
+    }))
   }
 
   /* A function to initialise the game */
   ititializeBoard () {
-    const URLData = extractURLData()
+    const URLData = this.state.URLData
     let sudokuData
     if (URLData) {
       sudokuData = {
-        solvedSudoku: solve(URLData.rawSoduko),
-        unsolvedSudoku: URLData.rawSoduko
+        solvedSudoku: solve(URLData.raw),
+        unsolvedSudoku: URLData.raw
       }
     }
     const { solvedSudoku, unsolvedSudoku } = URLData ? sudokuData : getSudoku(this.state.difficulty)
@@ -73,13 +92,14 @@ export default class Game extends Component {
       state.startTime = new Date()
       state.solvedTime = null
       state.URLData = URLData
+      state.difficulty = URLData ? URLData.difficulty : state.difficulty
     }))
     setInterval(this.countUp, 1000)
   }
 
   /* A function to run once the component is mounted */
   componentDidMount () {
-    // this.ititializeBoard()
+    this.handleURLData()
   }
 
   /* A function to increment/update the penaltySeconds state varriable */
@@ -105,22 +125,32 @@ export default class Game extends Component {
   isSolved () {
     const sodukoArray = getSudokuFromObject(this.state.sudoku)
     const isSolved = isSolvedSudoku(sodukoArray)
-    this.setState(produce(state => {
-      state.isSolved = isSolved
-      state.solvedTime = isSolved ? new Date() : null
-    }))
+    const solvedAt = new Date()
 
     if (isSolved) {
+      let name = null
+      while (name === null) {
+        name = prompt('Please enter your name to display Game results')
+      }
+      /* content to share */
       const sudokuObj = {
+        name: name,
         raw: this.state.sudokuRaw,
         startTime: this.state.startTime,
-        solvedTime: this.state.solvedTime,
-        penaltySeconds: this.state.penaltySeconds
+        solvedTime: solvedAt,
+        penaltySeconds: this.state.penaltySeconds,
+        difficulty: this.state.difficulty
       }
       this.setState(produce(state => {
+        state.shareData = sudokuObj
         state.shareURL = shareURL(sudokuObj)
+        state.isSolved = isSolved
       }))
     }
+
+    this.setState(produce(state => {
+      state.solvedTime = isSolved ? solvedAt : null
+    }))
   }
 
   /* A function to intialise the game if the New Game button is clicked */
@@ -212,27 +242,6 @@ export default class Game extends Component {
     }))
   }
 
-  /** A Function to create data to share the game */
-  handleShareGame () {
-    let name = null
-    while (name === null) {
-      name = prompt('Please enter your name to share the Game')
-    }
-    /* content to share */
-    const sudokuObj = {
-      name: name,
-      raw: this.state.sudokuRaw,
-      startTime: this.state.startTime,
-      solvedTime: this.state.solvedTime,
-      penaltySeconds: this.state.penaltySeconds
-    }
-    /* set the state variables */
-    this.setState(produce(state => {
-      state.shareURL = shareURL(sudokuObj)
-      state.shareData = sudokuObj
-    }))
-  }
-
   render () {
     // get the sudoku to display based on the mode
     const sudoku = (this.state.showSolution) ? this.state.solutionSoduko : this.state.sudoku
@@ -240,21 +249,22 @@ export default class Game extends Component {
 
       <>
         <Container>
-          <InfoTab isSolvedStatus={this.state.isSolved} onShareClick={this.handleShareGame} />
+          <InfoTab isSolvedStatus={this.state.isSolved} />
         </Container>
         <br />
-        <Container>
-          {this.state.shareData && <p>share data ready</p>}
-        </Container>
+        {this.state.URLData && this.state.isSolved && this.state.shareData && <ChallengeComplete shareData={this.state.shareData} URLData={this.state.URLData} />}
+        {this.state.URLData && !sudoku && <ShareDataDisplay shareData={this.state.URLData} shareURL={null} onClick={this.handleClearURLData} />}
+        {this.state.shareData && this.state.isSolved && !this.state.URLData && <ShareDataDisplay shareData={this.state.shareData} shareURL={this.state.shareURL} />}
         <Container className='game-components'>
 
           {
-            sudoku && <SudokuBoard
-              displayMode={this.state.displayMode}
-              sudoku={sudoku}
-              onChange={this.handleChange}
-              onClick={this.handleInputClick}
-                      />
+            (sudoku && !this.state.isSolved) &&
+              <SudokuBoard
+                displayMode={this.state.displayMode}
+                sudoku={sudoku}
+                onChange={this.handleChange}
+                onClick={this.handleInputClick}
+              />
             }
 
           <StatusBoard
