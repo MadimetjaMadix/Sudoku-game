@@ -33,9 +33,10 @@ function playerStats (playerData, isEncoded) {
     startTime = new Date(startTime)
     solvedTime = new Date(solvedTime)
   }
-  player.time = elapsedSecond(startTime, solvedTime) + (penaltySeconds * penalty)
+  const time = elapsedSecond(startTime, solvedTime) + (penaltySeconds * penalty)
+  player.time = time
   player.timeMins = timeFormat(startTime, solvedTime)
-  player.timePenaltyMins = timeFormat(startTime, solvedTime)
+  player.timePenaltyMins = minutesTimeFormat(time)
   return player
 }
 
