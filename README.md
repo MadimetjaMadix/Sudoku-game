@@ -1,4 +1,4 @@
-# [Sudoku-game React App](mad-sudoku.herokuapp.com)
+# [Sudoku-game React App](https://mad-sudoku.herokuapp.com/)
 
 ## Brief:
 The focus of this project was on working with the React frame-work and Javascript. The design of this game makes one think of the state management and the data structure of the of the game (the flow of Data). Although one can use an npm package for getting the Sudoku board (solved and unsolved), a library of function were created from scratch to handle all that.
