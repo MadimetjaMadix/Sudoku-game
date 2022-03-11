@@ -1,19 +1,37 @@
-// given a sudoku cell, returns the row
+/**
+ * Description. given a sudoku cell, returns the row
+ * @param {number} cell the cell of a 9x9 sudoku board.
+ * @returns {number} the row the cell belongs to.
+ */
 function returnRow (cell) {
   return Math.floor(cell / 9)
 }
 
-// given a sudoku cell, returns the column
+/**
+ * Description. given a sudoku cell, returns the column
+ * @param {number} cell the cell of a 9x9 sudoku board.
+ * @returns {number} the column the cell belongs to.
+ */
 function returnCol (cell) {
   return cell % 9
 }
 
-// given a sudoku cell, returns the 3x3 block
+/**
+ * Description. given a sudoku cell, returns the 3x3 block.
+ * @param {number} cell the cell of a 9x9 sudoku board.
+ * @returns {number} the block the cell belongs to.
+ */
 function returnBlock (cell) {
   return Math.floor(returnRow(cell) / 3) * 3 + Math.floor(returnCol(cell) / 3)
 }
 
-// given a number, a row and a sudoku, returns true if the number can be placed in the row
+/**
+ * Description. given a number, a row and a sudoku, returns true if the number can be placed in the row.
+ * @param {number} number the number to be placed in the row.
+ * @param {number} row The row to check.
+ * @param {array} sudoku The board to check in.
+ * @returns {boolean} true if the number can be placed in the row.
+ */
 function isPossibleRow (number, row, sudoku) {
   for (let i = 0; i <= 8; i++) {
     if (sudoku[row * 9 + i] === number) {
@@ -23,7 +41,13 @@ function isPossibleRow (number, row, sudoku) {
   return true
 }
 
-// given a number, a column and a sudoku, returns true if the number can be placed in the column
+/**
+ * given a number, a column and a sudoku, returns true if the number can be placed in the column
+ * @param {number} number The number to be placed in the column.
+ * @param {number} col The column to check.
+ * @param {array} sudoku The board to check in.
+ * @returns {boolean} true if the number can be placed in the column.
+ */
 function isPossibleCol (number, col, sudoku) {
   for (let i = 0; i <= 8; i++) {
     if (sudoku[col + 9 * i] === number) {
@@ -33,7 +57,13 @@ function isPossibleCol (number, col, sudoku) {
   return true
 }
 
-// given a number, a 3x3 block and a sudoku, returns true if the number can be placed in the block
+/**
+ * given a number, a 3x3 block and a sudoku, returns true if the number can be placed in the block
+ * @param {number} number The number to be placed in the block.
+ * @param {number} block The block to check.
+ * @param {array} sudoku The board to check in.
+ * @returns {boolean} true if the number can be placed in the block.
+ */
 function isPossibleBlock (number, block, sudoku) {
   for (let i = 0; i <= 8; i++) {
     if (sudoku[Math.floor(block / 3) * 27 + i % 3 + 9 * Math.floor(i / 3) + 3 * (block % 3)] === number) {
@@ -43,7 +73,13 @@ function isPossibleBlock (number, block, sudoku) {
   return true
 }
 
-// given a cell, a number and a sudoku, returns true if the number can be placed in the cell
+/**
+ * given a cell, a number and a sudoku, returns true if the number can be placed in the cell.
+ * @param {number} cell The cell to place the number in.
+ * @param {number} number The number to be placed in the cell.
+ * @param {array} sudoku The board to check in.
+ * @returns {boolean} true if the number can be placed in the cell.
+ */
 function isPossibleNumber (cell, number, sudoku) {
   const row = returnRow(cell)
   const col = returnCol(cell)
@@ -51,7 +87,12 @@ function isPossibleNumber (cell, number, sudoku) {
   return isPossibleRow(number, row, sudoku) && isPossibleCol(number, col, sudoku) && isPossibleBlock(number, block, sudoku)
 }
 
-// given a row and a sudoku, returns true if it's a legal row
+/**
+ * given a row and a sudoku, returns true if it's a valid row.
+ * @param {number} row the row to check
+ * @param {array} sudoku The board to check in.
+ * @returns {boolean} true if it's a valid row'
+ */
 function isCorrectRow (row, sudoku) {
   const rightSequence = [1, 2, 3, 4, 5, 6, 7, 8, 9]
   const rowTemp = []
@@ -62,7 +103,12 @@ function isCorrectRow (row, sudoku) {
   return rowTemp.join() === rightSequence.join()
 }
 
-// given a column and a sudoku, returns true if it's a legal column
+/**
+ * given a column and a sudoku, returns true if it's a valid column.
+ * @param {number} col the column to check
+ * @param {array} sudoku The board to check in.
+ * @returns {boolean} true if it's a valid column'
+ */
 function isCorrectCol (col, sudoku) {
   const rightSequence = [1, 2, 3, 4, 5, 6, 7, 8, 9]
   const colTemp = []
@@ -73,7 +119,12 @@ function isCorrectCol (col, sudoku) {
   return colTemp.join() === rightSequence.join()
 }
 
-// given a 3x3 block and a sudoku, returns true if it's a legal block
+/**
+ * given a 3x3 block id and a sudoku, returns true if it's a valid block.
+ * @param {number} block the block to check
+ * @param {array} sudoku The board to check in.
+ * @returns {boolean} true if it's a valid block'
+ */
 function isCorrectBlock (block, sudoku) {
   const rightSequence = [1, 2, 3, 4, 5, 6, 7, 8, 9]
   const blockTemp = []
@@ -84,7 +135,11 @@ function isCorrectBlock (block, sudoku) {
   return blockTemp.join() === rightSequence.join()
 }
 
-// given a sudoku, returns true if the sudoku is solved
+/**
+ * given a sudoku, returns true if the sudoku is solved
+ * @param {array} sudoku The board to check.
+ * @returns {boolean} true if the sudoku is solved
+ */
 function isSolvedSudoku (sudoku) {
   for (let i = 0; i <= 8; i++) {
     if (!isCorrectBlock(i, sudoku) || !isCorrectRow(i, sudoku) || !isCorrectCol(i, sudoku)) {
@@ -94,7 +149,12 @@ function isSolvedSudoku (sudoku) {
   return true
 }
 
-// given a cell and a sudoku, returns an array with all possible values we can write in the cell
+/**
+ * given a cell and a sudoku, returns an array with all possible values we can write in the cell.
+ * @param {number} cell the cell to check in.
+ * @param {array} sudoku The board to check in.
+ * @returns {array} An array with all possible values.
+ */
 function determinePossibleValues (cell, sudoku) {
   const possible = []
   for (let i = 1; i <= 9; i++) {
@@ -105,13 +165,23 @@ function determinePossibleValues (cell, sudoku) {
   return possible
 }
 
-// given an array of possible values assignable to a cell, returns a random value picked from the array
+/**
+ * given an array of possible values assignable to a cell, returns a random value picked from the array
+ * @param {array} possible An array with all possible values for a given cell.
+ * @param {number} cell the cell to test.
+ * @returns {array} a random value picked from the possible array.
+ */
 function determineRandomPossibleValue (possible, cell) {
   const randomPicked = Math.floor(Math.random() * possible[cell].length)
   return possible[cell][randomPicked]
 }
 
-// given a sudoku, returns a two dimension array with all possible values
+/**
+ * given a sudoku, returns a two dimension array with all possible values
+ * @param {array} sudoku The board to check.
+ * @returns {boolean} false if the sudoku is not unique.
+ * @returns {array} The two dimension array with all possible values, if true.
+ */
 /*
 [
     [ 9, 8, 7, ...],
@@ -136,7 +206,12 @@ function scanSudokuForUnique (sudoku) {
   return possible
 }
 
-// given an array and a number, removes the number from the array
+/**
+ * given an array and a number, removes the number from the array
+ * @param {array} attemptArray array with attempt numbers.
+ * @param {number} number number to remove.
+ * @returns {array} attemptArray with number removed.
+ */
 function removeAttempt (attemptArray, number) {
   for (let i = 0; i < attemptArray.length; i++) {
     if (attemptArray[i] === number) {
@@ -146,7 +221,11 @@ function removeAttempt (attemptArray, number) {
   return attemptArray
 }
 
-// given a two dimension array of possible values, returns the index of a cell where there are the less possible numbers to choose from
+/**
+ * given a two dimension array of possible values, returns the index of a cell where there are the less possible numbers to choose from
+ * @param {array} possible a two dimension array of possible values
+ * @returns {number} the index of a cell where there are the less possible numbers to choose from.
+ */
 function nextRandom (possible) {
   let max = 9
   let minChoices = 0
@@ -161,7 +240,11 @@ function nextRandom (possible) {
   return minChoices
 }
 
-// given a sudoku, solve it and returns it
+/**
+ * given a sudoku, solve it and returns it
+ * @param {array} sudokuUnsolved unsolved sudoku to solve.
+ * @returns {array} a solved sudoku array.
+ */
 function solve (sudokuUnsolved) {
   let sudoku = [...sudokuUnsolved]
   const saved = []
@@ -199,7 +282,11 @@ function solve (sudokuUnsolved) {
   return sudoku
 }
 
-// given a difficulty, return the number of values to remove from a solved sudoku
+/**
+ * given a difficulty, return the number of values to remove from a solved sudoku.
+ * @param {string} difficulty a string representing dificulty level.
+ * @returns {number} the number of values to remove from a solved sudoku.
+ */
 function levelNumber (difficulty) {
   // define the different dificulty levels
   const levels = ['hard', 'medium', 'easy']
@@ -225,7 +312,11 @@ function levelNumber (difficulty) {
   }
 }
 
-// returns n (quantity) random numbers between 1 and 81, no repeats
+/**
+ * returns n (quantity) random numbers between 1 and 81, no repeats
+ * @param {number} quantity the number of values to remove from a solved sudoku.
+ * @returns {array} random numbers between 1 and 81, no repeats.
+ */
 function randomIndexes (quantity) {
   const randomIndexesArr = []
   while (randomIndexesArr.length < quantity) {
@@ -235,7 +326,12 @@ function randomIndexes (quantity) {
   return randomIndexesArr
 }
 
-// repalece the given indexs with null from a solved sudoku, to create an unsolved sudoku, and returns it
+/**
+ * repalece the given indexs with null from a solved sudoku, to create an unsolved sudoku, and returns it
+ * @param {array} indexArray containing random numbers between 1 and 81 to remove from the sudoku.
+ * @param {array} solvedSudoku solved sudoku array.
+ * @returns {array} unsolved sudoku array.
+ */
 function removeNumbers (indexArray, solvedSudoku) {
   const unsolvedSudoku = [...solvedSudoku]
   for (let i = 0; i < indexArray.length; i++) {
@@ -244,7 +340,12 @@ function removeNumbers (indexArray, solvedSudoku) {
   return unsolvedSudoku
 }
 
-/* returns an unsolved sudoku, given a solved sudoku and difficulty */
+/**
+ * returns an unsolved sudoku, given a solved sudoku and difficulty
+ * @param {string} difficulty to set on the sudoku.
+ * @param {array} sudoku solved sudoku array.
+ * @returns {array} unresolved sudoku array.
+ */
 function getUnsolvedSudoku (difficulty, sudoku) {
   const solvedSudoku = sudoku
   const elemntsToRemove = levelNumber(difficulty)
@@ -253,7 +354,11 @@ function getUnsolvedSudoku (difficulty, sudoku) {
   return unsolvedSudoku
 }
 
-/* returns a solved and unsolved Sudoku, given the difficulty */
+/**
+ * returns a solved and unsolved Sudoku, given the difficulty.
+ * @param {string} difficulty to set on the sudoku.
+ * @returns {object} solved and unsolved Sudoku
+ */
 function getSudoku (difficulty) {
   const sudoku = [0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -269,7 +374,11 @@ function getSudoku (difficulty) {
   return { solvedSudoku, unsolvedSudoku }
 }
 
-/* returns a sudoku object from a given soduku array */
+/**
+ *  returns a sudoku object from a given soduku array.
+ * @param {array} SudokuArray sudoku array.
+ * @returns {object} sudoku array object.
+ */
 function generateSudokuObject (SudokuArray) {
   /*
       generate a sudoku with the following structure:
@@ -297,18 +406,29 @@ function generateSudokuObject (SudokuArray) {
   return SudokuRowsObject
 }
 
-/* returns a sudoku array from agiven sudoku object */
+/**
+ *  returns a sudoku array from agiven sudoku object.
+ * @param {object} SudokuObj sudoku array object.
+ * @returns {array} sudoku array.
+ */
 function getSudokuFromObject (SudokuObj) {
   return SudokuObj.map(row => row.cols.map(col => col.value === '' ? null : col.value)).flat()
 }
 
-/** A function to create a Share URL */
-function shareURL (SudokuObj) {
-  const query = btoa(JSON.stringify(SudokuObj))
+/**
+ * A function to create a Share URL.
+ * @param {object} gameObj parameters of the played game (sudoku, solveTime...).
+ * @returns {string} URL to play the game.
+ */
+function shareURL (gameObj) {
+  const query = btoa(JSON.stringify(gameObj))
   return document.location.href.replace(/\?.+$/, '') + `?sudoku=${query}`
 }
 
-/** A function to extract the data from the URL */
+/**
+ * A function to extract the data from the URL.
+ * @returns {object} if any, an object containing game parameters.
+ */
 function extractURLData () {
   // retrive the URL
   const url = new URL(window.location)
